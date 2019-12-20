@@ -1,4 +1,6 @@
-### Template Engine [![npm version](https://badge.fury.io/js/all-templates.svg)](https://badge.fury.io/js/all-templates)  [![Coverage Status](https://coveralls.io/repos/bitbucket/apaschenko/all-templates/badge.svg)](https://coveralls.io/bitbucket/apaschenko/all-templates)
+### JS Template Engine 
+
+[![npm version](https://badge.fury.io/js/all-templates.svg)](https://badge.fury.io/js/all-templates)  [![Build Status](https://travis-ci.com/apaschenko/all-templates.svg?branch=master)](https://travis-ci.com/apaschenko/all-templates)  [![Coverage Status](https://coveralls.io/repos/github/apaschenko/all-templates/badge.svg?branch=master)](https://coveralls.io/github/apaschenko/all-templates?branch=master)
 
 Fast JS nested templates rendering.
 
@@ -91,7 +93,9 @@ const options = {
     }
 };
 
-let result = await AT.render(data, options).catch( (e) => { console.log(e); } );
+let result = await AT.render(data, options).catch( 
+    (e) => { console.log(e); } 
+);
 
 console.log(result);  // Hello, John Smith
 ```
@@ -111,7 +115,21 @@ let result = await AT.render(data).catch( (e) => { console.log(e); } );
 console.log(result);  // What Does The Fox Say?
 ```
 
-##### Parameters
+##### Example 6: Conditional rendering
+```javascript
+const data = {
+    start: 'Don’t {{ unless bully }}judge{{ else }}hit{{ end }} ' +
+           'a {{ if reader }}book{{ else }}saucepan{{ end }} by its cover.',
+    reader: true,
+    bully: false
+};
+
+let result = await AT.render(data).catch( (e) => { console.log(e); } );
+
+console.log(result);  // Don’t judge a book by its cover.
+```
+
+### Parameters
 
 ```javascript
 AT.render(data, options, functions)
