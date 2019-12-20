@@ -2,7 +2,6 @@
 
 const {expect} = require('chai');
 const should = require('chai').should();
-const sinon = require('sinon');
 
 const moduleUnderTest = require('../lib/main');
 const E = require('../lib/exceptions');
