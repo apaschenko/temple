@@ -34,6 +34,7 @@
   "homepage": "https://github.com/apaschenko/all-templates/blob/master/README.md",
   "devDependencies": {
     "chai": "^4.2.0",
+    "coveralls": "^3.0.9",
     "mocha": "^6.2.2"
   },
   "dependencies": {}
