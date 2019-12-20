@@ -1,6 +1,6 @@
 {
   "name": "all-templates",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "JS Templates rendering",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://apaschenko@bitbucket.org/apaschenko/all-templates.git/master"
+    "url": "git+https://github.com/apaschenko/all-templates"
   },
   "keywords": [
     "template",
@@ -31,7 +31,7 @@
   ],
   "author": "Alex Paschenko <past.first@gmail.com>",
   "license": "GPL-3.0",
-  "homepage": "https://bitbucket.org/apaschenko/all-templates/src/master/#readmy",
+  "homepage": "https://github.com/apaschenko/all-templates/blob/master/README.md",
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.2"
