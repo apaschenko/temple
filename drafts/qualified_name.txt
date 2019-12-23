@@ -1,0 +1,7 @@
+
+aaa.bbb[0].ccc['dd"dd']["ee'ee"].ggg
+aaa.bbb[*, delimiter1][*, delimiter2].ccc
+
+const qualNameParser = function(name) {
+
+}
