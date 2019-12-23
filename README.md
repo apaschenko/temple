@@ -1,6 +1,6 @@
 ### JS Template Engine 
 
-[![npm version](https://badge.fury.io/js/all-templates.svg)](https://badge.fury.io/js/all-templates)  [![Build Status](https://travis-ci.com/apaschenko/all-templates.svg?branch=master)](https://travis-ci.com/apaschenko/all-templates)  [![Coverage Status](https://coveralls.io/repos/github/apaschenko/all-templates/badge.svg?branch=master)](https://coveralls.io/github/apaschenko/all-templates?branch=master)
+[![npm version](https://badge.fury.io/js/all-templates.svg)](https://badge.fury.io/js/all-templates)  [![Build Status](https://travis-ci.com/apaschenko/all-templates.svg?branch=master)](https://travis-ci.com/apaschenko/all-templates)
 
 Fast JS nested templates rendering.
 

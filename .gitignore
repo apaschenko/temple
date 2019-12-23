@@ -1,0 +1,7 @@
+.idea
+template-engine.iml
+node_modules/
+package-lock.json
+1.js
+coverage/
+.nyc_output/
