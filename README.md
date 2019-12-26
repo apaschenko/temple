@@ -7,11 +7,13 @@ Fast JS nested templates rendering.
 ##### The main goal 
 of this library is to provide you with maximum functionality while saving ease of use in simple cases of its using.
 
-Goal | Implemented
+Features | Implemented
  --- | ---
-Ease of use | yes, using its meets intuitive expectations.
-Configurability | yes, you can change almost everything: from the placeholders to the general rendering behavior.
-Nested layers | yes, with an unlimited level of nesting (it restricted only on the size of available memory).
+Nested layers | yes
+Conditional rendering | yes
+Qualified names | no
+Configurability | yes
+
 The ability to store data anywhere | yes, with synchronous or asynchronous loading of its on demand.
 
 ### Installation
@@ -88,8 +90,8 @@ const data = {
 
 const options = {
     placeholder: {
-        open: '\\(\\(',
-        close: '\\)\\)'
+        open: '((',
+        close: '))'
     }
 };
 
@@ -174,7 +176,7 @@ Option | Type | Description | Default
  ---   | --- | --- | ---
 start_name | String &#124; RegExp | Key name in the "data" parameter, from which the rendering will start | "start"
 mode | Object | fast: if true, each layer will be rendered once | false
-placeholder | Object: { open: &#60;String&#62;, close: &#60;String&#62;} | Overrides the opening and closing part of the placeholder (for European languages - left and right, respectively) .Be careful: overridden values ​​will be part of the regular expression. Therefore, if you use special characters of regular expressions for your placeholders, then each such character must be escaped with two backslashes. For example, if you want to use a placeholder `((...))`, then you should specify `placeholder: {open: '\\(\\(', close: '\\)\\)'}` | `placeholder: {open: "{{", close: "}}"}`
+placeholder | Object: { open: &#60;String&#62;, close: &#60;String&#62;} | Overrides the opening and closing part of the placeholder (for European languages - left and right, respectively). | `placeholder: {open: "{{", close: "}}"}`
 undefined | String | If data source not found or undefined, it will be replaced to the defined value| 'undefined' 
 **Getters**
 
