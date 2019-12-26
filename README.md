@@ -11,9 +11,8 @@ Features | Implemented
  --- | ---
 Nested layers | yes
 Conditional rendering | yes
-Qualified names | no
+Qualified names | not yet
 Configurability | yes
-
 The ability to store data anywhere | yes, with synchronous or asynchronous loading of its on demand.
 
 ### Installation
