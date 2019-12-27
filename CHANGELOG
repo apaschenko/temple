@@ -1,3 +1,4 @@
 
+0.1.13 Added the qualified names processing
 0.1.11 Added auto-escaping to parts of custom placeholder (options.placeholder)
 0.1.10 Created a skeleton of application
