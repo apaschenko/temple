@@ -6,100 +6,189 @@ const should = require('chai').should();
 const moduleUnderTest = require('../lib/ph_lexical_analyzer');
 
 const Exceptions = {
-    UNTERMINATED_ESC_TAIL:   1,
-    ILLEGAL_QUOTE:           2,
-    BRACKET_AFTER_DELIMITER: 3,
-    NESTED_OP_BRACKET:       4,
-    ILLEGAL_CL_BRACKET:      5,
-    DOUBLE_DELIMITER:        6,
-    UNEXPECTED_ESCAPING:     7,
-    UNTERMINATED_STRING:     8
+    ILLEGAL_QUOTE:           1,
+    BRACKET_AFTER_DELIMITER: 2,
+    NESTED_OP_BRACKET:       3,
+    ILLEGAL_CL_BRACKET:      4,
+    DOUBLE_DELIMITER:        5,
+    UNTERMINATED_STRING:     6
 };
 
+
 describe('ph_lexical_analyzer.js', function () {
-    let result;
-    const testModules = {
+    let analyzerInput = {
+        placeholder: undefined,
+        fullEntry: 'test Full Entry',
+        layerName: 'test Layer Name',
+    };
+
+    let options = {};
+    let actualExc, actualData, throwing;
+
+    const modules = {
         E: {
-            Throw: function(exception, data) { return result = {exception, data} },
+            Throw: function(exception, data) {
+                actualExc = exception;
+                actualData = data;
+                throwing = true;
+            },
             Exceptions
         },
         C: {
-            ENTRY_POINT_NAME: 'start'
+            ESC_SYMBOL: '\\'
         }
     };
 
-    describe('Exceptions', function() {
-        let Exceptions = moduleUnderTest.Exceptions;
+    describe('Positive tests', function() {
+        const fixtures = [
+            {
+                ph: `aaa`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'}
+                ]
+            },
+            {
+                ph: `aaa.bbb[ccc]`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'ccc', type: 'regular', underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa . bbb[ ccc ]`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'ccc', type: 'regular', underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb["ccc"]`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'ccc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: ` aaa.bbb["c'cc"] `,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c\'cc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: ` aaa.bbb ["c[c]c"] `,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c[c]c', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: ` aaa.bbb ["c.c,c"] `,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c.c,c', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb['ccc']`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'ccc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb[\`ccc\`]`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'ccc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb[*, ccc]`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: '*',   type: 'regular', underBrackets: true, delimiter: undefined},
+                    {value: 'ccc', type: 'regular', underBrackets: true, delimiter: ','}
+                ]
+            },
+            {
+                ph: `aaa.bbb['c\ncc']`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c\ncc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb['c\u21b9cc']`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c\u21b9cc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+            {
+                ph: `aaa.bbb['c\x23cc']`,
+                expect: [
+                    {value: 'aaa', type: 'regular', underBrackets: false, delimiter: undefined},
+                    {value: 'bbb', type: 'regular', underBrackets: false, delimiter: '.'},
+                    {value: 'c#cc', type: 'string',  underBrackets: true, delimiter: undefined}
+                ]
+            },
+        ];
 
-        it('Check is Exceptions an Object', function() {
-            expect(Exceptions).to.be.an('object');
-        });
+        for (const test of fixtures) {
+            it(`|${test.ph}|`, function() {
+                analyzerInput.placeholder = test.ph;
+                const result = moduleUnderTest(analyzerInput, options, modules);
 
-        describe('Check format of each Exception', function() {
-            let keys = Object.keys(Exceptions);
-            for (let exc of keys) {
-                let e = Exceptions[exc];
-                it(exc, function() {
-                    expect(e.name).to.be.a('string');
-                    expect(e.message).to.be.a('string');
-                    expect(e.code).to.be.a('number');
-                });
-            }
-        });
+                Array.isArray(result).should.equal(true);
+                result.length.should.equal(test.expect.length);
+                for (let i = 0; i < result.length; i++) {
+                    expect(result[i].value).to.equal(test.expect[i].value);
+                    expect(result[i].type).to.equal(test.expect[i].type);
+                    expect(result[i].underBrackets).to.equal(test.expect[i].underBrackets);
+                    expect(result[i].delimiter).to.equal(test.expect[i].delimiter);
+                }
+            });
+        }
     });
 
-    describe('Throw', function() {
-        let Throw, Exceptions;
+    describe('Negative tests', function() {
+        const fixtures = [
+            {ph: 'aaa"bbb"', exc: Exceptions.ILLEGAL_QUOTE},
+            {ph: 'aaa..bbb', exc: Exceptions.DOUBLE_DELIMITER},
+            {ph: 'aaa,.bbb', exc: Exceptions.DOUBLE_DELIMITER},
+            {ph: 'aaa.,bbb', exc: Exceptions.DOUBLE_DELIMITER},
+            {ph: 'aaa[bbb, ccc[2] ]', exc: Exceptions.NESTED_OP_BRACKET},
+            {ph: 'aaa. "bbb', exc: Exceptions.UNTERMINATED_STRING},
+            {ph: 'aaa. bbb].ccc', exc: Exceptions.ILLEGAL_CL_BRACKET},
+            {ph: 'aaa. [bbb].ccc', exc: Exceptions.BRACKET_AFTER_DELIMITER}
+        ];
 
-        before(function() {
-            Throw = moduleUnderTest.Throw;
-        });
-
-        it('Call with data parameter', function() {
-            let throwing = false;
-            const testName = 'test name';
-            const testMessage = 'test message';
-            const testCode = 'test code';
-            const testData = 'test data';
-            const testException = {
-                name: testName,
-                message: testMessage,
-                code: testCode
-            };
-
-            try {
-                Throw(testException, testData);
-            } catch (e) {
-                expect(e.name).to.equal(testName);
-                expect(e.message).to.equal(`${testMessage} ${testData}`);
-                expect(e.code).to.equal(testCode);
-                throwing = true;
-            }
-
-            expect(throwing).to.equal(true);
-        });
-        it('Call without data parameter', function() {
-            let throwing = false;
-            const testName = 'test name';
-            const testMessage = 'test message';
-            const testCode = 'test code';
-            const testException = {
-                name: testName,
-                message: testMessage,
-                code: testCode
-            };
-
-            try {
-                Throw(testException);
-            } catch (e) {
-                expect(e.name).to.equal(testName);
-                expect(e.message).to.equal(`${testMessage} `);
-                expect(e.code).to.equal(testCode);
-                throwing = true;
-            }
-
-            expect(throwing).to.equal(true);
-        });
-
-     });
+        for (const test of fixtures) {
+            it(`|${test.ph}|`, function() {
+                throwing = false;
+                analyzerInput.placeholder = test.ph;
+                moduleUnderTest(analyzerInput, options, modules);
+                expect(actualExc).to.equal(test.exc);
+            });
+        }
+    });
 });
