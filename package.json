@@ -1,5 +1,5 @@
 {
-  "name": "all-templates",
+  "name": "temple",
   "version": "0.1.13",
   "description": "JS Templates rendering",
   "main": "index.js",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apaschenko/all-templates"
+    "url": "git+https://github.com/apaschenko/temple"
   },
   "keywords": [
     "template",
@@ -32,7 +32,7 @@
   ],
   "author": "Alex Paschenko <past.first@gmail.com>",
   "license": "GPL-3.0",
-  "homepage": "https://github.com/apaschenko/all-templates/blob/master/README.md",
+  "homepage": "https://github.com/apaschenko/temple/blob/master/README.md",
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.2"
